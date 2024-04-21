@@ -1,0 +1,36 @@
+python3 earthenginedl.py --bounds -84 24 -78 32 --idate '2020-05-01' --fdate '2023-12-31' --landsat 8 --region '17R' --maxims 50 --scale 150 --outpath Landsat_Data/17R
+python saliencymap.py --dir_path Landsat_Data/17R --crs EPSG:4326 --grid_key 17R
+python saliencymap2boxes.py -k 17R -w 100 -n 1000 -p Landsat_Data/17R/landmarks
+python prepare_yolo_data.py --data_path Landsat_Data/17R --output_path /home/argus-vision/vision/VisionTrainingGround/LD/datasets/17R_dataset --r 17R
+
+
+python earthenginedl2.py --grid_key 17R --sensor s2 --outpath 17R_S2 --scale 150 --maxims 2000 --cloud_cover_max 40
+
+results = model.train(
+        data='17R_class.yaml',
+        imgsz=1216,
+        epochs=100,
+        batch=4,
+        name='17R_s2_to_l8_small_3366landmarks',
+        degrees= 180.0,
+        scale= 0.5,
+        perspective= 0.00017,
+        lr0= 0.00428,
+        lrf= 0.00933,
+        momentum= 0.91146,
+        weight_decay= 0.00042,
+        warmup_epochs= 3.34695,
+        warmup_momentum= 0.54918,
+        box= 6.50223,
+        cls= 0.65876,
+        dfl= 1.28939,
+        hsv_h= 0.00959,
+        hsv_s= 0.59062,
+        hsv_v= 0.34087,
+        translate= 0.14881,
+        shear= 0.0,
+        flipud= 0.0,
+        fliplr= 0.505,
+        mosaic= 0.92206,
+        mixup= 0.0,
+        copy_paste= 0.0)
